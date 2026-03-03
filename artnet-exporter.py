@@ -5,7 +5,16 @@ from prometheus_client import start_http_server, Gauge
 
 ARTNET_PORT = 6454
 EXPECTED_FPS = 44.0
-EXPECTED_INTERVAL = 1.0 / EXPECTED_FPS
+# Expected FPS per universe
+EXPECTED_FPS_PER_UNIVERSE = {
+    1: 44.0,   # Portal
+    2: 44.0,   # Blind
+    3: 44.0,   # Shutter
+    11: 1.0,  # Turntable
+}
+
+# Precompute intervals
+EXPECTED_INTERVAL_PER_UNIVERSE = {u: 1.0/fps for u, fps in EXPECTED_FPS_PER_UNIVERSE.items()}
 EMA_ALPHA = 0.2  # smoothing factor
 
 # --- Combined position metric ---
@@ -20,10 +29,9 @@ portal = Gauge("portal_position", "Portal position", ['x', 'y'])
 portal_rotation = Gauge("portal_rotation", "Portal rotation")
 portal_robot = Gauge("portal_robot", "Portal robot values", ['1', '2'])
 
-# --- Packet timestamps ---
-universe_last_packet = Gauge(
-    "artnet_universe_last_packet_timestamp",
-    "Unix timestamp of last ArtDMX packet received",
+universe_time_since_last_packet = Gauge(
+    "artnet_universe_time_since_last_packet_seconds",
+    "Time since last ArtDMX packet was received",
     ["universe"]
 )
 
@@ -60,11 +68,17 @@ def parse_16bit(data, offset):
 def update_timing(universe, now):
     universe_str = str(universe)
 
+    # Get expected interval for this universe, fallback to 44 FPS
+    expected_interval = EXPECTED_INTERVAL_PER_UNIVERSE.get(universe, 1.0 / 44.0)
+
+    # Compute time since last packet
     if universe in last_packet_time:
         interval = now - last_packet_time[universe]
-        packet_interval.labels(universe_str).set(interval)
+        universe_time_since_last_packet.labels(universe_str).set(interval)
 
-        jitter = abs(interval - EXPECTED_INTERVAL)
+        # Raw jitter vs expected interval
+        jitter = abs(interval - expected_interval)
+        packet_interval.labels(universe_str).set(interval)
         packet_jitter.labels(universe_str).set(jitter)
 
         # EMA smoothing
@@ -73,6 +87,11 @@ def update_timing(universe, now):
         jitter_ema_state[universe] = ema
         packet_jitter_ema.labels(universe_str).set(ema)
 
+    else:
+        # First packet: set time-since-last to 0
+        universe_time_since_last_packet.labels(universe_str).set(0.0)
+
+    # Update last packet time
     last_packet_time[universe] = now
 
 
@@ -95,9 +114,6 @@ def listen():
         dmx_data = packet[18:18+length]
 
         now = time.time()
-
-        # Timestamp metric
-        universe_last_packet.labels(str(universe)).set(now)
 
         # Jitter measurement
         update_timing(universe, now)
