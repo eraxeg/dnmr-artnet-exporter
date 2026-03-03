@@ -16,11 +16,9 @@ stage_position = Gauge(
 )
 
 # --- Portal metrics ---
-portal_x = Gauge("portal_x", "Portal X position")
+portal = Gauge("portal_position", "Portal position", ['x', 'y'])
 portal_rotation = Gauge("portal_rotation", "Portal rotation")
-portal_robot2 = Gauge("portal_robot2", "Portal robot2")
-portal_robot1 = Gauge("portal_robot1", "Portal robot1")
-portal_y = Gauge("portal_y", "Portal Y position")
+portal_robot = Gauge("portal_robot", "Portal robot values", ['1', '2'])
 
 # --- Packet timestamps ---
 universe_last_packet = Gauge(
@@ -125,11 +123,9 @@ def listen():
         # --- Universe 1: Portal ---
         elif universe == 1:
             if len(dmx_data) >= 10:
-                portal_x.set(parse_16bit(dmx_data, 0))
+                portal.labels(x=parse_16bit(dmx_data, 0), y=parse_16bit(dmx_data, 8)).set(parse_16bit(dmx_data, 4))
                 portal_rotation.set(parse_16bit(dmx_data, 2))
-                portal_robot2.set(parse_16bit(dmx_data, 4))
-                portal_robot1.set(parse_16bit(dmx_data, 6))
-                portal_y.set(parse_16bit(dmx_data, 8))
+                portal_robot.labels('1', '2').set(parse_16bit(dmx_data, 6), parse_16bit(dmx_data, 4))
 
 
 if __name__ == "__main__":
