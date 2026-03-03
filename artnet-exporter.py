@@ -9,9 +9,9 @@ EXPECTED_INTERVAL = 1.0 / EXPECTED_FPS
 EMA_ALPHA = 0.2  # smoothing factor
 
 # --- Combined position metric ---
-stage_position = Gauge(
-    "stage_position",
-    "16bit position value of stage devices",
+device_position = Gauge(
+    "device_position",
+    "16bit position value of devices moving in one dimension",
     ["device"]
 )
 
@@ -106,19 +106,19 @@ def listen():
         if universe == 11:
             value = parse_16bit(dmx_data, 0)
             if value is not None:
-                stage_position.labels("turntable").set(value)
+                device_position.labels("turntable").set(value)
 
         # --- Universe 2: Blind ---
         elif universe == 2:
             value = parse_16bit(dmx_data, 0)
             if value is not None:
-                stage_position.labels("blind").set(value)
+                device_position.labels("blind").set(value)
 
         # --- Universe 3: Shutter ---
         elif universe == 3:
             value = parse_16bit(dmx_data, 0)
             if value is not None:
-                stage_position.labels("shutter").set(value)
+                device_position.labels("shutter").set(value)
 
         # --- Universe 1: Portal ---
         elif universe == 1:
