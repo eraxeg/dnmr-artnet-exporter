@@ -1,0 +1,513 @@
+DMX ch (universe 0),Device
+1,Portal - X MSB
+2,Portal - X LSB
+3,Portal - Speed X MSB
+4,Portal - Speed X LSB
+5,Portal - Y MSB
+6,Portal - Y LSB
+7,Portal - Speed Y MSB
+8,Portal - Speed Y LSB
+9,Portal - Rotation MSB
+10,Portal - Rotation LSB
+11,Portal - Rotation Speed MSB
+12,Portal - Rotation Speed LSB
+13,Portal - Robot 1 MSB
+14,Portal - Robot 1 LSB
+15,Portal - Robot 1 Speed MSB
+16,Portal - Robot 1 Speed LSB
+17,Portal - Robot 2 MSB
+18,Portal - Robot 2 LSB
+19,Portal - Robot 2 Speed MSB
+20,Portal - Robot 2 Speed LSB
+21,Piano Marquee 1
+22,Piano Marquee 2
+23,Piano Marquee 3
+24,
+25,
+26,
+27,
+28,
+29,
+30,
+31,
+32,
+33,
+34,
+35,
+36,
+37,
+38,
+39,
+40,
+41,Onyx screen - Play/Stop
+42,Onyx screen - Source
+43,
+44,Onyx - Blind Position
+45,Onyx - Blind Speed
+46,
+47,
+48,
+49,
+50,
+51,Blind - Position MSB
+52,Blind - Position LSB
+53,Blind - Speed
+54,
+55,
+56,
+57,
+58,
+59,
+60,
+61,Shutter - Position MSB
+62,Shutter - Position LSB
+63,Shutter - Speed
+64,Shutter - VMC Intensity
+65,
+66,
+67,
+68,
+69,
+70,
+71,Marquee outside - Bulb1
+72,Marquee outside - Bulb2
+73,Marquee outside - Bulb3
+74,Marquee outside - Bulb4
+75,Marquee outside - Bulb5
+76,Marquee outside - Bulb6
+77,
+78,
+79,Marquee outside - Neon1
+80,Marquee outside - Neon2
+81,Marquee outside - Neon3
+82,Marquee outside - Neon4
+83,Marquee outside - Neon5
+84,Marquee outside - Bulb1
+85,Marquee outside - Bulb2
+86,Marquee outside - Bulb3
+87,
+88,
+89,
+90,
+91,Brain switchable glass
+92,
+93,Brain light - cold1
+94,Brain light - hot1
+95,Brain light - cold2
+96,Brain light - hot2
+97,Brain light - cold3
+98,Brain light - hot3
+99,
+100,
+101,Acoustic - Main Level MSB
+102,Acoustic - Main Level LSB
+103,Acoustic - Preset
+104,
+105,
+106,
+107,
+108,
+109,
+110,
+111,Heliostat sun mode (0-127 is sun mode, 128-255 is manual mode (in manual mode the sun is nor more reflected on heliostat #1))
+112,Inside Heliostat Azim MSB
+113,Inside Heliostat Azim LSB
+114,Inside Heliostat Elev MSB
+115,Inside Heliostat Elev LSB
+116,
+117,
+118,
+119,
+120,
+121,
+122,
+123,
+124,
+125,
+126,
+127,
+128,
+129,
+130,
+131,
+132,
+133,
+134,
+135,
+136,
+137,
+138,
+139,
+140,
+141,
+142,
+143,
+144,
+145,
+146,
+147,
+148,
+149,
+150,
+151,Onyx video intensity
+152,Onyx video preset
+153,
+154,
+155,
+156,
+157,
+158,
+159,
+160,
+161,Hole screen video opacity
+162,Hole screen video selection
+163,movingring #1 
+164,movingring #1 
+165,movingring #1 
+166,movingring #1 
+167,movingring #1 
+168,movingring #1 
+169,movingring #1 
+170,movingring #1 
+171,movingring #1 
+172,movingring #1 
+173,movingring #1 
+174,movingring #1 
+175,movingring #1 
+176,movingring #1 
+177,movingring #1 
+178,movingring #1 
+179,movingring #1 
+180,movingring #1 
+181,movingring #1 
+182,movingring #1 
+183,movingring #1 
+184,movingring #1 
+185,movingring #1 
+186,movingring #1 
+187,movingring #2
+188,movingring #2
+189,movingring #2
+190,movingring #2
+191,movingring #2
+192,movingring #2
+193,movingring #2
+194,movingring #2
+195,movingring #2
+196,movingring #2
+197,movingring #2
+198,movingring #2
+199,movingring #2
+200,movingring #2
+201,movingring #2
+202,movingring #2
+203,movingring #2
+204,movingring #2
+205,movingring #2
+206,movingring #2
+207,movingring #2
+208,movingring #2
+209,movingring #2
+210,movingring #2
+211,movingring1
+212,movingring1
+213,movingring2
+214,movingring2
+215,Switchable glass - A/V rack
+216,Switchable glass - Motor rack
+217,Switchable glass - Not used
+218,Switchable glass - Not used
+219,Rack lights - A/V Rack - MSB
+220,Rack lights - A/V Rack - LSB
+221,Rack lights - Motor Rack - MSB
+222,Rack lights - Motor Rack - LSB
+223,
+224,
+225,
+226,
+227,
+228,
+229,
+230,
+231,PARKOLOR 200DW LIGHT 1
+232,
+233,
+234,
+235,PARKOLOR 200DW LIGHT 2
+236,
+237,
+238,
+239,PARKOLOR 200DW LIGHT 3
+240,
+241,
+242,
+243,PARKOLOR 200DW LIGHT 4
+244,
+245,
+246,
+247,PARKOLOR 200DW LIGHT 5
+248,
+249,
+250,
+251,Pond light
+252,
+253,
+254,
+255,
+256,
+257,
+258,
+259,
+260,
+261,
+262,
+263,
+264,
+265,
+266,
+267,
+268,
+269,
+270,FlickeringLabel All
+271,FlickeringLabel 1
+272,FlickeringLabel 2
+273,FlickeringLabel 3
+274,FlickeringLabel 4
+275,FlickeringLabel 5
+276,FlickeringLabel 6
+277,FlickeringLabel 7
+278,
+279,
+280,
+281,
+282,
+283,
+284,
+285,
+286,
+287,
+288,
+289,
+290,
+291,
+292,
+293,
+294,
+295,
+296,
+297,
+298,
+299,
+300,
+301,LIGHT PAR 1
+302,
+303,
+304,
+305,
+306,
+307,
+308,
+309,
+310,
+311,LIGHT PAR 2
+312,
+313,
+314,
+315,
+316,
+317,
+318,
+319,
+320,
+321,LIGHT PAR 3
+322,
+323,
+324,
+325,
+326,
+327,
+328,
+329,
+330,
+331,LIGHT PAR 4
+332,
+333,
+334,
+335,
+336,
+337,
+338,
+339,
+340,
+341,LIGHT PAR 5
+342,
+343,
+344,
+345,
+346,
+347,
+348,
+349,
+350,
+351,LIGHT PAR 6
+352,
+353,
+354,
+355,
+356,
+357,
+358,
+359,
+360,
+361,LIGHT PAR 7
+362,
+363,
+364,
+365,
+366,
+367,
+368,
+369,
+370,
+371,LIGHT PAR 8
+372,
+373,
+374,
+375,
+376,
+377,
+378,
+379,
+380,
+381,LIGHT PAR 9
+382,
+383,
+384,
+385,
+386,
+387,
+388,
+389,
+390,
+391,LIGHT PAR 10
+392,
+393,
+394,
+395,
+396,
+397,
+398,
+399,
+400,
+401,LIGHT PAR 11
+402,
+403,
+404,
+405,
+406,
+407,
+408,
+409,
+410,
+411,LIGHT PAR 12
+412,
+413,
+414,
+415,
+416,
+417,
+418,
+419,
+420,
+421,LIGHT PAR 13
+422,
+423,
+424,
+425,
+426,
+427,
+428,
+429,
+430,
+431,LIGHT PAR 14
+432,
+433,
+434,
+435,
+436,
+437,
+438,
+439,
+440,
+441,
+442,
+443,
+444,
+445,
+446,
+447,
+448,
+449,Profile 3
+450,Profile 4
+451,Profile 1
+452,Profile 2
+453,
+454,
+455,
+456,
+457,
+458,
+459,
+460,
+461,Turntable - Speed preset Bit 1
+462,Turntable - Speed preset Bit 2
+463,Turntable - Speed preset Bit 3
+464,Turntable - Speed preset Bit 4
+465,Turntable - reserved
+466,Turntable - reserved
+467,Turntable - reserved
+468,Turntable - reserved
+469,Turntable - reserved
+470,Turntable - Turn Left
+471,Turntable - Turn Right
+472,Turntable - Stop
+473,Turntable - reserved
+474,Turntable - reserved
+475,Turntable - reserved
+476,Turntable - reserved
+477,Turntable - reserved
+478,
+479,
+480,
+481,
+482,
+483,
+484,
+485,
+486,
+487,
+488,
+489,
+490,
+491,
+492,
+493,
+494,
+495,
+496,
+497,
+498,
+499,
+500,
+501,
+502,
+503,
+504,
+505,
+506,
+507,
+508,
+509,
+510,
+511,
+512,

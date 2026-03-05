@@ -1,3 +1,4 @@
+import csv
 import socket
 import struct
 import time
@@ -18,6 +19,18 @@ EXPECTED_FPS_PER_UNIVERSE = {
 # Precompute intervals
 EXPECTED_INTERVAL_PER_UNIVERSE = {u: 1.0/fps for u, fps in EXPECTED_FPS_PER_UNIVERSE.items()}
 EMA_ALPHA = 0.2  # smoothing factor
+
+# Universe 1 mapping
+
+dmx_descriptions = {}
+
+with open("universe_0.csv", newline='') as csvfile:
+    reader = csv.DictReader(csvfile, delimiter=',')
+    for row in reader:
+        if row['DMX ch (universe 0)']:  # skip empty rows
+            channel = int(row['DMX ch (universe 0)'])
+            description = row['Device']
+            dmx_descriptions[channel] = description
 
 # --- Combined position metric ---
 device_position = Gauge(
@@ -55,6 +68,10 @@ packet_jitter_ema = Gauge(
     "Smoothed jitter (EMA)",
     ["universe"]
 )
+
+dmx_broadcast_values = Gauge( "dmx_broadcast_channel_value", 
+    "Captured broadcast dmx channel value", 
+    ["channel_number", "description", "universe"] )
 
 # --- State tracking ---
 last_packet_time = {}
@@ -153,6 +170,18 @@ def listen():
                 portal.labels(x=parse_16bit(dmx_data, 0), y=parse_16bit(dmx_data, 8)).set(parse_16bit(dmx_data, 4))
                 portal_rotation.set(parse_16bit(dmx_data, 2))
                 portal_robot.labels('1', '2').set(parse_16bit(dmx_data, 6), parse_16bit(dmx_data, 4))
+        
+        elif universe == 0:
+            for i in range(length):
+                channel_number = i + 1
+                value = dmx_data[i]
+                description = dmx_descriptions.get(channel_number, "")  # default to empty string if not found
+                # Skip channels with no description or value 0
+                if not description or value == 0:
+                    continue
+
+                dmx_broadcast_values.labels(str(channel_number), description, str(universe)).set(value)
+
 
 
 if __name__ == "__main__":
