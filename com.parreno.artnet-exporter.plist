@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" 
+ "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+
+    <!-- Unique label -->
+    <key>Label</key>
+    <string>com.parreno.artnet-exporter</string>
+
+    <!-- Command and arguments -->
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/parreno/dnmr-monitoring/artnet-exporter/venv/bin/python</string>
+        <string>/Users/parreno/dnmr-monitoring/artnet-exporter/artnet-exporter.py</string>
+    </array>
+
+    <!-- Working directory -->
+    <key>WorkingDirectory</key>
+    <string>/Users/parreno/dnmr-monitoring/artnet-exporter</string>
+
+    <!-- Run at login -->
+    <key>RunAtLoad</key>
+    <true/>
+
+    <!-- Restart if it crashes -->
+    <key>KeepAlive</key>
+    <true/>
+
+    <!-- Log files -->
+    <key>StandardOutPath</key>
+    <string>/Users/parreno/dnmr-monitoring/artnet-exporter/artnet-exporter.out.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/Users/parreno/dnmr-monitoring/artnet-exporter/artnet-exporter.err.log</string>
+
+</dict>
+</plist>
