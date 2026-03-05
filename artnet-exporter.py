@@ -7,9 +7,11 @@ ARTNET_PORT = 6454
 EXPECTED_FPS = 44.0
 # Expected FPS per universe
 EXPECTED_FPS_PER_UNIVERSE = {
+    0: 30.0,   # TouchDesigner
     1: 44.0,   # Portal
     2: 44.0,   # Blind
     3: 44.0,   # Shutter
+    4: 44.0,   # Membrane Motors
     11: 1.0,  # Turntable
 }
 
@@ -129,6 +131,15 @@ def listen():
             value = parse_16bit(dmx_data, 0)
             if value is not None:
                 device_position.labels("blind").set(value)
+
+        # --- Universe 4: Membrane Motors --
+        elif universe == 4:
+            value = parse_16bit(dmx_data, 210)
+            if value is not None:
+                device_position.labels("membrane_motor_1").set(value)
+            value = parse_16bit(dmx_data, 212)
+            if value is not None:
+                device_position.labels("membrane_motor_2").set(value)
 
         # --- Universe 3: Shutter ---
         elif universe == 3:
