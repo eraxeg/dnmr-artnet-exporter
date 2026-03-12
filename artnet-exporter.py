@@ -13,6 +13,7 @@ EXPECTED_FPS_PER_UNIVERSE = {
     2: 44.0,   # Blind
     3: 44.0,   # Shutter
     4: 44.0,   # Membrane Motors
+    5: 44.0,   # Heliostat
     11: 1.0,  # Turntable
 }
 
@@ -40,9 +41,8 @@ device_position = Gauge(
 )
 
 # --- Portal metrics ---
-portal = Gauge("portal_position", "Portal position", ['x', 'y'])
-portal_rotation = Gauge("portal_rotation", "Portal rotation")
-portal_robot = Gauge("portal_robot", "Portal robot values", ['axis_1', 'axis_2'])
+portal = Gauge("portal", "Portal position", ['axis'])
+heliostat = Gauge("heliostat", "Heliostat #1 position", ['axis'])
 
 universe_time_since_last_packet = Gauge(
     "artnet_universe_time_since_last_packet_seconds",
@@ -164,12 +164,20 @@ def listen():
             if value is not None:
                 device_position.labels("shutter").set(value)
 
+        # --- Universe 5: Heliostat ---
+        elif universe == 5:
+            if len(dmx_data) >= 4:
+                heliostat.labels(axis='azimuth').set(parse_16bit(dmx_data, 0))
+                heliostat.labels(axis='elevation').set(parse_16bit(dmx_data, 2))
+
         # --- Universe 1: Portal ---
         elif universe == 1:
             if len(dmx_data) >= 10:
-                portal.labels(x=parse_16bit(dmx_data, 0), y=parse_16bit(dmx_data, 8)).set(parse_16bit(dmx_data, 4))
-                portal_rotation.set(parse_16bit(dmx_data, 2))
-                portal_robot.labels(axis_1=parse_16bit(dmx_data, 6), axis_2=parse_16bit(dmx_data, 4))
+                portal.labels(axis='x').set(parse_16bit(dmx_data, 0))
+                portal.labels(axis='y').set(parse_16bit(dmx_data, 8))
+                portal.labels(axis='rotation').set(parse_16bit(dmx_data, 2))
+                portal.labels(axis='1').set(parse_16bit(dmx_data, 6))
+                portal.labels(axis='2').set(parse_16bit(dmx_data, 4))
         
         elif universe == 0:
             for i in range(length):
