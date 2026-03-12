@@ -42,7 +42,7 @@ device_position = Gauge(
 # --- Portal metrics ---
 portal = Gauge("portal_position", "Portal position", ['x', 'y'])
 portal_rotation = Gauge("portal_rotation", "Portal rotation")
-portal_robot = Gauge("portal_robot", "Portal robot values", ['1', '2'])
+portal_robot = Gauge("portal_robot", "Portal robot values", ['axis_1', 'axis_2'])
 
 universe_time_since_last_packet = Gauge(
     "artnet_universe_time_since_last_packet_seconds",
@@ -169,7 +169,7 @@ def listen():
             if len(dmx_data) >= 10:
                 portal.labels(x=parse_16bit(dmx_data, 0), y=parse_16bit(dmx_data, 8)).set(parse_16bit(dmx_data, 4))
                 portal_rotation.set(parse_16bit(dmx_data, 2))
-                portal_robot.labels('1', '2').set(parse_16bit(dmx_data, 6), parse_16bit(dmx_data, 4))
+                portal_robot.labels(axis_1=parse_16bit(dmx_data, 6), axis_2=parse_16bit(dmx_data, 4))
         
         elif universe == 0:
             for i in range(length):
