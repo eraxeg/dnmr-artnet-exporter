@@ -197,7 +197,7 @@ def listen():
             if len(dmx_data) >= 4:
                 heliostat.labels(axis='azimuth').set(parse_16bit(dmx_data, 0))
                 heliostat.labels(axis='elevation').set(parse_16bit(dmx_data, 2))
-                update_device_position("Heliostat", value)
+                update_device_position("Heliostat Azimuth", parse_16bit(dmx_data, 0))
 
         # --- Universe 1: Portal ---
         elif universe == 1:
@@ -207,7 +207,7 @@ def listen():
                 portal.labels(axis='rotation').set(parse_16bit(dmx_data, 2))
                 portal.labels(axis='1').set(parse_16bit(dmx_data, 6))
                 portal.labels(axis='2').set(parse_16bit(dmx_data, 4))
-                update_device_position("Moving Speaker", value)
+                update_device_position("Moving Speaker X", parse_16bit(dmx_data, 0))
         
         elif universe == 0:
             for i in range(length):
