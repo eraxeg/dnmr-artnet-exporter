@@ -33,6 +33,11 @@ with open("universe_0.csv", newline='') as csvfile:
             description = row['Device']
             dmx_descriptions[channel] = description
 
+device_time_since_move = Gauge(
+    "device_time_since_move_seconds",
+    "Seconds since the device position last changed",
+    ["device"]
+)
 # --- Combined position metric ---
 device_position = Gauge(
     "device_position",
@@ -76,12 +81,29 @@ dmx_broadcast_values = Gauge( "dmx_broadcast_channel_value",
 # --- State tracking ---
 last_packet_time = {}
 jitter_ema_state = {}
+last_device_position = {}
+last_move_time = {}
+
 
 
 def parse_16bit(data, offset):
     if len(data) >= offset + 2:
         return (data[offset] << 8) | data[offset + 1]
     return None
+
+def update_device_position(device, value):
+    now = time.time()
+
+    previous = last_device_position.get(device)
+
+    # Detect movement
+    if previous is None or previous != value:
+        last_move_time[device] = now
+        last_device_position[device] = value
+
+    # Compute time since move
+    last_move = last_move_time.get(device, now)
+    device_time_since_move.labels(device).set(now - last_move)
 
 
 def update_timing(universe, now):
@@ -142,33 +164,40 @@ def listen():
             value = parse_16bit(dmx_data, 0)
             if value is not None:
                 device_position.labels("turntable").set(value)
+                update_device_position("Turntable", value)
+
 
         # --- Universe 2: Blind ---
         elif universe == 2:
             value = parse_16bit(dmx_data, 0)
             if value is not None:
                 device_position.labels("blind").set(value)
+                update_device_position("Blind", value)
 
-        # --- Universe 4: Membrane Motors --
+        # --- Universe 4: Membrane Motors ---
         elif universe == 4:
             value = parse_16bit(dmx_data, 210)
             if value is not None:
                 device_position.labels("membrane_motor_1").set(value)
+                update_device_position("Membrane Ring 1", value)
             value = parse_16bit(dmx_data, 212)
             if value is not None:
                 device_position.labels("membrane_motor_2").set(value)
+                update_device_position("Membrane Ring 2", value)
 
         # --- Universe 3: Shutter ---
         elif universe == 3:
             value = parse_16bit(dmx_data, 0)
             if value is not None:
                 device_position.labels("shutter").set(value)
+                update_device_position("Shutter", value)
 
         # --- Universe 5: Heliostat ---
         elif universe == 5:
             if len(dmx_data) >= 4:
                 heliostat.labels(axis='azimuth').set(parse_16bit(dmx_data, 0))
                 heliostat.labels(axis='elevation').set(parse_16bit(dmx_data, 2))
+                update_device_position("Heliostat", value)
 
         # --- Universe 1: Portal ---
         elif universe == 1:
@@ -178,6 +207,7 @@ def listen():
                 portal.labels(axis='rotation').set(parse_16bit(dmx_data, 2))
                 portal.labels(axis='1').set(parse_16bit(dmx_data, 6))
                 portal.labels(axis='2').set(parse_16bit(dmx_data, 4))
+                update_device_position("Moving Speaker", value)
         
         elif universe == 0:
             for i in range(length):
