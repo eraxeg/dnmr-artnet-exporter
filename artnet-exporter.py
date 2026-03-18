@@ -12,8 +12,8 @@ EXPECTED_FPS_PER_UNIVERSE = {
     1: 44.0,   # Portal
     2: 44.0,   # Blind
     3: 44.0,   # Shutter
-    4: 44.0,   # Membrane Motors
-    5: 44.0,   # Heliostat
+    4: 44.0,   # Heliostat
+    5: 44.0,   # Membrane Motors
     11: 1.0,  # Turntable
 }
 
@@ -182,8 +182,8 @@ def listen():
                 device_position.labels("blind").set(value)
                 update_device_position("Blind", value)
 
-        # --- Universe 4: Membrane Motors ---
-        elif net == 0 and subnet == 0 and universe == 4:
+        # --- Universe 5: Membrane Motors ---
+        elif net == 0 and subnet == 0 and universe == 5:
             value = parse_16bit(dmx_data, 210)
             if value is not None:
                 device_position.labels("membrane_motor_1").set(value)
@@ -200,8 +200,8 @@ def listen():
                 device_position.labels("shutter").set(value)
                 update_device_position("Shutter", value)
 
-        # --- Universe 5: Heliostat ---
-        elif net == 0 and subnet == 0 and universe == 5:
+        # --- Universe 4: Heliostat ---
+        elif net == 0 and subnet == 0 and universe == 4:
             if len(dmx_data) >= 4:
                 heliostat.labels(axis='azimuth').set(parse_16bit(dmx_data, 0))
                 heliostat.labels(axis='elevation').set(parse_16bit(dmx_data, 2))
