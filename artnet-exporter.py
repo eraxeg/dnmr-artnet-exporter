@@ -106,7 +106,10 @@ def update_device_position(device, value):
     device_time_since_move.labels(device).set(now - last_move)
 
 
-def update_timing(universe, now):
+def update_timing(net, subnet, universe, now):
+    if net != 0 or subnet != 0:
+        return  # Only track universes in net 0, subnet 0
+
     universe_str = str(universe)
 
     # Get expected interval for this universe, fallback to 44 FPS
@@ -150,17 +153,22 @@ def listen():
         if opcode != 0x5000:  # ArtDMX
             continue
 
-        universe = struct.unpack('<H', packet[14:16])[0]
+        port_address = struct.unpack('<H', packet[14:16])[0]
+
+        net = (port_address >> 8) & 0x7F       # 7 bits
+        subnet = (port_address >> 4) & 0x0F    # 4 bits
+        universe = port_address & 0x0F         # 4 bits
+
         length = struct.unpack('>H', packet[16:18])[0]
         dmx_data = packet[18:18+length]
 
         now = time.time()
 
         # Jitter measurement
-        update_timing(universe, now)
+        update_timing(net, subnet, universe, now)
 
         # --- Universe 11: Turntable ---
-        if universe == 11:
+        if net == 0 and subnet == 0 and universe == 11:
             value = parse_16bit(dmx_data, 0)
             if value is not None:
                 device_position.labels("turntable").set(value)
@@ -168,14 +176,14 @@ def listen():
 
 
         # --- Universe 2: Blind ---
-        elif universe == 2:
+        elif net == 0 and subnet == 0 and universe == 2:
             value = parse_16bit(dmx_data, 0)
             if value is not None:
                 device_position.labels("blind").set(value)
                 update_device_position("Blind", value)
 
         # --- Universe 4: Membrane Motors ---
-        elif universe == 4:
+        elif net == 0 and subnet == 0 and universe == 4:
             value = parse_16bit(dmx_data, 210)
             if value is not None:
                 device_position.labels("membrane_motor_1").set(value)
@@ -186,21 +194,21 @@ def listen():
                 update_device_position("Membrane Ring 2", value)
 
         # --- Universe 3: Shutter ---
-        elif universe == 3:
+        elif net == 0 and subnet == 0 and universe == 3:
             value = parse_16bit(dmx_data, 0)
             if value is not None:
                 device_position.labels("shutter").set(value)
                 update_device_position("Shutter", value)
 
         # --- Universe 5: Heliostat ---
-        elif universe == 5:
+        elif net == 0 and subnet == 0 and universe == 5:
             if len(dmx_data) >= 4:
                 heliostat.labels(axis='azimuth').set(parse_16bit(dmx_data, 0))
                 heliostat.labels(axis='elevation').set(parse_16bit(dmx_data, 2))
                 update_device_position("Heliostat Azimuth", parse_16bit(dmx_data, 0))
 
         # --- Universe 1: Portal ---
-        elif universe == 1:
+        elif net == 0 and subnet == 0 and universe == 1:
             if len(dmx_data) >= 10:
                 portal.labels(axis='x').set(parse_16bit(dmx_data, 0))
                 portal.labels(axis='y').set(parse_16bit(dmx_data, 8))
@@ -209,7 +217,7 @@ def listen():
                 portal.labels(axis='2').set(parse_16bit(dmx_data, 4))
                 update_device_position("Moving Speaker X", parse_16bit(dmx_data, 0))
         
-        elif universe == 0:
+        elif net == 0 and subnet == 0 and universe == 0:
             for i in range(length):
                 channel_number = i + 1
                 value = dmx_data[i]
