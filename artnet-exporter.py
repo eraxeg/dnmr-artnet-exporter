@@ -33,9 +33,9 @@ with open("universe_0.csv", newline='') as csvfile:
             description = row['Device']
             dmx_descriptions[channel] = description
 
-device_time_since_move = Gauge(
-    "device_time_since_move_seconds",
-    "Seconds since the device position last changed",
+device_last_move_timestamp = Gauge(
+    "device_last_move_timestamp_seconds",
+    "Unix timestamp of last detected movement",
     ["device"]
 )
 # --- Combined position metric ---
@@ -96,15 +96,10 @@ def update_device_position(device, value):
 
     previous = last_device_position.get(device)
 
-    # Detect movement
     if previous is None or previous != value:
         last_move_time[device] = now
         last_device_position[device] = value
-
-    # Compute time since move
-    last_move = last_move_time.get(device, now)
-    device_time_since_move.labels(device).set(now - last_move)
-
+        device_last_move_timestamp.labels(device).set(now)
 
 def update_timing(net, subnet, universe, now):
     if net != 0 or subnet != 0:
