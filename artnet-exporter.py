@@ -49,9 +49,9 @@ device_position = Gauge(
 portal = Gauge("portal", "Portal position", ['axis'])
 heliostat = Gauge("heliostat", "Heliostat #1 position", ['axis'])
 
-universe_time_since_last_packet = Gauge(
-    "artnet_universe_time_since_last_packet_seconds",
-    "Time since last ArtDMX packet was received",
+universe_last_packet_timestamp = Gauge(
+    "artnet_universe_last_packet_timestamp_seconds",
+    "Unix timestamp of last ArtDMX packet received",
     ["universe"]
 )
 
@@ -110,29 +110,23 @@ def update_timing(net, subnet, universe, now):
     # Get expected interval for this universe, fallback to 44 FPS
     expected_interval = EXPECTED_INTERVAL_PER_UNIVERSE.get(universe, 1.0 / 44.0)
 
-    # Compute time since last packet
-    if universe in last_packet_time:
-        interval = now - last_packet_time[universe]
-        universe_time_since_last_packet.labels(universe_str).set(interval)
+    previous = last_packet_time.get(universe)
 
-        # Raw jitter vs expected interval
+    if previous is not None:
+        interval = now - previous
+
         jitter = abs(interval - expected_interval)
         packet_interval.labels(universe_str).set(interval)
         packet_jitter.labels(universe_str).set(jitter)
 
-        # EMA smoothing
         prev_ema = jitter_ema_state.get(universe, jitter)
         ema = (EMA_ALPHA * jitter) + ((1 - EMA_ALPHA) * prev_ema)
         jitter_ema_state[universe] = ema
         packet_jitter_ema.labels(universe_str).set(ema)
 
-    else:
-        # First packet: set time-since-last to 0
-        universe_time_since_last_packet.labels(universe_str).set(0.0)
-
-    # Update last packet time
+    # Always update state
     last_packet_time[universe] = now
-
+    universe_last_packet_timestamp.labels(universe_str).set(now)
 
 def listen():
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
